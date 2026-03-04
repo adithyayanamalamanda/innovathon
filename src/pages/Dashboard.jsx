@@ -1,273 +1,248 @@
 import React, { useState, useEffect } from 'react';
 import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
-    Legend
-} from 'recharts';
-import {
-    LayoutDashboard,
-    TrendingUp,
-    CloudSun,
-    Sprout,
-    ArrowUpRight,
-    ArrowDownRight,
-    Zap,
-    BookOpen,
-    Calendar
+    TrendingUp, Calendar, MapPin, Droplets, Sun, Leaf, BarChart3,
+    IndianRupee, ExternalLink, Users, Tractor, Map, ArrowUpRight,
+    CloudRain, Wind, ThermometerSun, Eye
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { base44 } from '@/api/base44Client';
-import { useLanguage } from '@/i18n/LanguageContext';
+import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const Dashboard = () => {
-    const { t } = useLanguage();
-    
-    const [stats, setStats] = useState({
-        totalEarnings: '₹45,200',
-        activeBookings: 12,
-        completionRate: '94%',
-        pendingActions: 3
-    });
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        base44.auth.me().then(setUser).catch(() => setUser({ full_name: 'Farmer', email: 'demo@agrilink.in' }));
+    }, []);
+
+    const bookingTrend = [
+        { month: 'Oct', bookings: 4 },
+        { month: 'Nov', bookings: 7 },
+        { month: 'Dec', bookings: 3 },
+        { month: 'Jan', bookings: 9 },
+        { month: 'Feb', bookings: 12 },
+        { month: 'Mar', bookings: 8 },
+    ];
 
     const soilData = [
-        { name: 'Loamy', value: 45 },
-        { name: 'Clay', value: 25 },
-        { name: 'Sandy', value: 20 },
-        { name: 'Others', value: 10 },
+        { name: 'Black', value: 40, color: '#334155' },
+        { name: 'Red', value: 25, color: '#ef4444' },
+        { name: 'Wet', value: 20, color: '#3b82f6' },
+        { name: 'Dry', value: 15, color: '#f59e0b' },
     ];
 
-    const bookingTrends = [
-        { month: 'Jan', bookings: 45 },
-        { month: 'Feb', bookings: 52 },
-        { month: 'Mar', bookings: 78 },
-        { month: 'Apr', bookings: 40 },
-        { month: 'May', bookings: 95 },
-        { month: 'Jun', bookings: 110 },
+    const stats = [
+        { label: 'Total Bookings', value: '47', icon: Calendar, color: 'bg-blue-50 text-blue-600', trend: '+12%', trendUp: true },
+        { label: 'Active Listings', value: '8', icon: Map, color: 'bg-emerald-50 text-emerald-600', trend: '+3', trendUp: true },
+        { label: 'Revenue', value: '₹1.2L', icon: IndianRupee, color: 'bg-amber-50 text-amber-600', trend: '+18%', trendUp: true },
+        { label: 'Rating', value: '4.8', icon: TrendingUp, color: 'bg-purple-50 text-purple-600', trend: '★★★★★', trendUp: true },
     ];
 
-    const COLORS = ['#059669', '#10b981', '#34d399', '#6ee7b7'];
+    const schemes = [
+        { name: 'PM-KISAN', desc: '₹6,000/year income support for eligible farmers', ministry: 'Dept. of Agriculture', link: 'https://pmkisan.gov.in/' },
+        { name: 'PMFBY', desc: 'Crop insurance at subsidized premiums against natural calamities', ministry: 'Min. of Agriculture', link: 'https://pmfby.gov.in/' },
+        { name: 'KCC', desc: 'Credit facility at reduced interest rates for farmers', ministry: 'NABARD', link: 'https://www.nabard.org/' },
+    ];
 
     return (
-        <div className="container mx-auto px-4 pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-                <div>
-                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">{t('dashboard.title')}</h1>
-                    <p className="text-slate-500">{t('dashboard.subtitle')}</p>
-                </div>
-                <div className="flex gap-3">
-                    <Button variant="outline" className="rounded-xl">
-                        <Calendar className="w-4 h-4 mr-2" />
-                        {t('dashboard.schedule')}
-                    </Button>
-                    <Button variant="premium">
-                        <Zap className="w-4 h-4 mr-2" />
-                        {t('dashboard.aiAdvisor')}
-                    </Button>
-                </div>
+        <div className="container mx-auto px-4 pb-20 page-transition">
+            {/* Header */}
+            <div className="mb-12">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                    <div className="flex items-center gap-3 text-primary font-bold text-sm uppercase tracking-widest mb-3">
+                        <BarChart3 className="w-4 h-4" />
+                        Analytics
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-2">
+                        Welcome back, <span className="gradient-text">{user?.full_name?.split(' ')[0] || 'Farmer'}</span>
+                    </h1>
+                    <p className="text-slate-500 text-lg">Here's an overview of your farm activity and insights.</p>
+                </motion.div>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                <StatCard
-                    label={t('dashboard.totalEarnings')}
-                    value={stats.totalEarnings}
-                    trend={t('dashboard.fromLastMonth')}
-                    up={true}
-                    icon={TrendingUp}
-                />
-                <StatCard
-                    label={t('dashboard.activeBookings')}
-                    value={stats.activeBookings}
-                    trend={t('dashboard.newToday')}
-                    up={true}
-                    icon={Calendar}
-                />
-                <StatCard
-                    label={t('dashboard.completionRate')}
-                    value={stats.completionRate}
-                    trend={t('dashboard.fromLastSeason')}
-                    up={false}
-                    icon={Sprout}
-                />
-                <StatCard
-                    label={t('dashboard.systemHealth')}
-                    value={t('dashboard.optimal')}
-                    trend={t('dashboard.allSystemsOnline')}
-                    up={true}
-                    icon={Zap}
-                />
+            {/* Stats */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                {stats.map((stat, i) => (
+                    <motion.div key={i}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.08 }}
+                    >
+                        <Card className="border border-slate-200/40 shadow-card rounded-[2rem] overflow-hidden card-hover bg-white/80 backdrop-blur-lg h-full">
+                            <CardContent className="p-6">
+                                <div className="flex items-start justify-between mb-5">
+                                    <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center shadow-sm", stat.color)}>
+                                        <stat.icon className="w-6 h-6" />
+                                    </div>
+                                    <span className={cn("text-[10px] font-bold px-2 py-1 rounded-lg",
+                                        stat.trendUp ? "bg-emerald-50 text-emerald-600 border border-emerald-100" : "bg-rose-50 text-rose-600 border border-rose-100")}>
+                                        {stat.trend}
+                                    </span>
+                                </div>
+                                <div className="text-3xl font-extrabold text-slate-900 tracking-tight mb-1">{stat.value}</div>
+                                <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">{stat.label}</div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
-                {/* Main Chart */}
-                <Card className="lg:col-span-2 shadow-sm">
-                    <CardHeader>
-                        <CardTitle>{t('dashboard.bookingTrends')}</CardTitle>
-                        <CardDescription>{t('dashboard.bookingTrendsDesc')}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={bookingTrends}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
-                                <Tooltip
-                                    cursor={{ fill: '#f8fafc' }}
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                                />
-                                <Bar dataKey="bookings" fill="#059669" radius={[6, 6, 0, 0]} barSize={40} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="lg:col-span-2"
+                >
+                    <Card className="border border-slate-200/40 shadow-card rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-lg h-full">
+                        <CardHeader className="pb-2 px-8 pt-8">
+                            <CardTitle className="text-xl font-extrabold">Booking Trends</CardTitle>
+                            <CardDescription>Monthly booking activity over the past 6 months</CardDescription>
+                        </CardHeader>
+                        <CardContent className="px-6 pb-6">
+                            <ResponsiveContainer width="100%" height={280}>
+                                <BarChart data={bookingTrend} barSize={32}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                    <XAxis dataKey="month" tick={{ fontSize: 12, fontWeight: 600, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 12, fontWeight: 600, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                                    <Tooltip
+                                        contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', padding: '12px 16px' }}
+                                        labelStyle={{ fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}
+                                    />
+                                    <Bar dataKey="bookings" fill="#059669" radius={[10, 10, 4, 4]} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </motion.div>
 
-                {/* Soil Distribution Pie */}
-                <Card className="shadow-sm">
-                    <CardHeader>
-                        <CardTitle>{t('dashboard.regionalSoilTypes')}</CardTitle>
-                        <CardDescription>{t('dashboard.basedOnListings')}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="h-[300px] flex flex-col items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={soilData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {soilData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend verticalAlign="bottom" height={36} />
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </CardContent>
-                </Card>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                >
+                    <Card className="border border-slate-200/40 shadow-card rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-lg h-full">
+                        <CardHeader className="pb-2 px-8 pt-8">
+                            <CardTitle className="text-xl font-extrabold">Soil Distribution</CardTitle>
+                            <CardDescription>Types of soil in your listed lands</CardDescription>
+                        </CardHeader>
+                        <CardContent className="px-6 pb-6 flex items-center justify-center">
+                            <ResponsiveContainer width="100%" height={280}>
+                                <PieChart>
+                                    <Pie data={soilData} dataKey="value" nameKey="name" cx="50%" cy="50%"
+                                        innerRadius={55} outerRadius={90} strokeWidth={4} stroke="#fff">
+                                        {soilData.map((entry, index) => (
+                                            <Cell key={index} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip contentStyle={{ borderRadius: '12px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }} />
+                                    <Legend iconType="circle" iconSize={8}
+                                        formatter={(value) => <span className="text-xs font-bold text-slate-600 ml-1">{value}</span>} />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             </div>
 
+            {/* Weather + Schemes */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Weather card */}
-                <Card className="shadow-sm border-l-4 border-l-primary overflow-hidden">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <div>
-                            <CardTitle>{t('dashboard.smartWeather')}</CardTitle>
-                            <CardDescription>{t('dashboard.aiPoweredAdvice')}</CardDescription>
-                        </div>
-                        <CloudSun className="w-8 h-8 text-primary" />
-                    </CardHeader>
-                    <CardContent className="pt-4">
-                        <div className="bg-slate-50 p-6 rounded-2xl mb-6">
-                            <h4 className="font-bold text-slate-900 mb-2">{t('dashboard.optimalHarvestWindow')}</h4>
-                            <p className="text-slate-600 text-sm leading-relaxed">
-                                {t('dashboard.harvestAdvice')}
-                            </p>
-                        </div>
-                        <div className="grid grid-cols-3 gap-4">
-                            <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
-                                <span className="block text-xs font-bold text-slate-400 uppercase mb-1">{t('dashboard.humidity')}</span>
-                                <span className="text-lg font-bold text-slate-900">65%</span>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    <Card className="border border-slate-200/40 shadow-card rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-lg h-full">
+                        <CardHeader className="px-8 pt-8 pb-6">
+                            <CardTitle className="text-xl font-extrabold flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500">
+                                    <Sun className="w-5 h-5" />
+                                </div>
+                                Weather Insights
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="px-8 pb-8">
+                            <div className="grid grid-cols-2 gap-4 mb-6">
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-transparent border border-amber-100 flex items-center gap-3">
+                                    <ThermometerSun className="w-5 h-5 text-amber-500" />
+                                    <div>
+                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Temperature</div>
+                                        <div className="font-extrabold text-slate-900 text-lg">32°C</div>
+                                    </div>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-50 to-transparent border border-blue-100 flex items-center gap-3">
+                                    <CloudRain className="w-5 h-5 text-blue-500" />
+                                    <div>
+                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Rainfall</div>
+                                        <div className="font-extrabold text-slate-900 text-lg">20%</div>
+                                    </div>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-50 to-transparent border border-purple-100 flex items-center gap-3">
+                                    <Droplets className="w-5 h-5 text-purple-500" />
+                                    <div>
+                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Humidity</div>
+                                        <div className="font-extrabold text-slate-900 text-lg">65%</div>
+                                    </div>
+                                </div>
+                                <div className="p-4 rounded-2xl bg-gradient-to-br from-teal-50 to-transparent border border-teal-100 flex items-center gap-3">
+                                    <Wind className="w-5 h-5 text-teal-500" />
+                                    <div>
+                                        <div className="text-[10px] text-slate-500 font-bold uppercase">Wind</div>
+                                        <div className="font-extrabold text-slate-900 text-lg">12 km/h</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
-                                <span className="block text-xs font-bold text-slate-400 uppercase mb-1">{t('dashboard.visibility')}</span>
-                                <span className="text-lg font-bold text-slate-900">10km</span>
+                            <div className="bg-emerald-50/80 rounded-2xl p-4 border border-emerald-100">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <Leaf className="w-4 h-4 text-primary" />
+                                    <span className="text-xs font-bold text-primary uppercase tracking-wider">AI Tip</span>
+                                </div>
+                                <p className="text-sm text-slate-700 leading-relaxed italic">"Moderate temperature and low rainfall — ideal conditions for field operations. Consider deep watering for cotton crops."</p>
                             </div>
-                            <div className="p-4 rounded-xl border border-slate-100 bg-white shadow-sm">
-                                <span className="block text-xs font-bold text-slate-400 uppercase mb-1">{t('dashboard.pressure')}</span>
-                                <span className="text-lg font-bold text-slate-900">1012hPa</span>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                        </CardContent>
+                    </Card>
+                </motion.div>
 
-                {/* Govt Schemes */}
-                <Card className="shadow-sm">
-                    <CardHeader>
-                        <CardTitle>{t('dashboard.govtSchemes')}</CardTitle>
-                        <CardDescription>{t('dashboard.recentlyAnnounced')}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-4">
-                            <SchemeItem
-                                title={t('dashboard.pmKisan')}
-                                desc={t('dashboard.pmKisanDesc')}
-                                tag={t('dashboard.directBenefit')}
-                            />
-                            <SchemeItem
-                                title={t('dashboard.soilHealth')}
-                                desc={t('dashboard.soilHealthDesc')}
-                                tag={t('dashboard.agriInput')}
-                            />
-                            <SchemeItem
-                                title={t('dashboard.fasal')}
-                                desc={t('dashboard.fasalDesc')}
-                                tag={t('dashboard.insurance')}
-                            />
-                        </div>
-                        <Button variant="ghost" className="w-full mt-6 text-primary font-bold">
-                            {t('dashboard.viewAllSchemes')}
-                        </Button>
-                    </CardContent>
-                </Card>
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                >
+                    <Card className="border border-slate-200/40 shadow-card rounded-[2rem] overflow-hidden bg-white/80 backdrop-blur-lg h-full">
+                        <CardHeader className="px-8 pt-8 pb-6">
+                            <CardTitle className="text-xl font-extrabold flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
+                                    <ExternalLink className="w-5 h-5" />
+                                </div>
+                                Government Schemes
+                            </CardTitle>
+                            <CardDescription>Farmer welfare programs you can benefit from</CardDescription>
+                        </CardHeader>
+                        <CardContent className="px-8 pb-8">
+                            <div className="space-y-4">
+                                {schemes.map((scheme, i) => (
+                                    <a key={i} href={scheme.link} target="_blank" rel="noopener noreferrer"
+                                        className="block p-5 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-primary/30 hover:bg-primary/3 transition-all group cursor-pointer">
+                                        <div className="flex items-start justify-between mb-2">
+                                            <h4 className="font-bold text-slate-900 group-hover:text-primary transition-colors text-lg">{scheme.name}</h4>
+                                            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-primary transition-colors shrink-0" />
+                                        </div>
+                                        <p className="text-slate-600 text-sm leading-relaxed mb-2">{scheme.desc}</p>
+                                        <div className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{scheme.ministry}</div>
+                                    </a>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </motion.div>
             </div>
         </div>
     );
 };
-
-const StatCard = ({ label, value, trend, up, icon: Icon }) => (
-    <Card className="shadow-sm card-hover">
-        <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-                <div className="p-2 bg-primary/10 text-primary rounded-xl">
-                    <Icon className="w-5 h-5" />
-                </div>
-                {up ? (
-                    <div className="flex items-center text-emerald-500 text-xs font-bold">
-                        <ArrowUpRight className="w-3 h-3 mr-1" />
-                        {trend}
-                    </div>
-                ) : (
-                    <div className="flex items-center text-rose-500 text-xs font-bold">
-                        <ArrowDownRight className="w-3 h-3 mr-1" />
-                        {trend}
-                    </div>
-                )}
-            </div>
-            <div>
-                <h4 className="text-slate-500 text-sm font-medium mb-1">{label}</h4>
-                <span className="text-3xl font-bold text-slate-900">{value}</span>
-            </div>
-        </CardContent>
-    </Card>
-);
-
-const SchemeItem = ({ title, desc, tag }) => (
-    <div className="flex gap-4 p-4 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100">
-        <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
-            <BookOpen className="w-6 h-6" />
-        </div>
-        <div>
-            <div className="flex items-center gap-2 mb-1">
-                <h5 className="font-bold text-slate-900">{title}</h5>
-                <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">{tag}</span>
-            </div>
-            <p className="text-sm text-slate-500 leading-relaxed">{desc}</p>
-        </div>
-    </div>
-);
 
 export default Dashboard;

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
     Search, Send, MoreVertical, User, CheckCheck, Circle,
-    Phone, Video, Info, ChevronLeft, X
+    Phone, Video, Info, ChevronLeft, X, MessageCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -55,7 +55,6 @@ const Messages = () => {
         };
         setMessages([...messages, newMsg]);
         setMessage('');
-        // Simulate reply after 1.5s
         setTimeout(() => {
             setMessages(prev => [...prev, {
                 id: Date.now() + 1, sender: 'them',
@@ -71,7 +70,7 @@ const Messages = () => {
     );
 
     return (
-        <div className="container mx-auto px-4 pb-20">
+        <div className="container mx-auto px-4 pb-20 page-transition">
             {/* Toasts */}
             <div className="fixed top-24 right-4 z-[200] flex flex-col gap-2 pointer-events-none">
                 <AnimatePresence>
@@ -84,38 +83,38 @@ const Messages = () => {
                 </AnimatePresence>
             </div>
 
-            <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden flex flex-col md:flex-row h-[700px]">
+            <div className="bg-white rounded-[2.5rem] shadow-elevated border border-slate-200/40 overflow-hidden flex flex-col md:flex-row h-[700px]">
                 {/* Conversations List */}
-                <div className="w-full md:w-80 lg:w-96 border-r border-slate-100 flex flex-col">
-                    <div className="p-6 border-b border-slate-50">
-                        <h2 className="text-2xl font-black text-slate-900 mb-4">Messages</h2>
+                <div className="w-full md:w-80 lg:w-96 border-r border-slate-100 flex flex-col bg-white">
+                    <div className="p-6 border-b border-slate-100/80">
+                        <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Messages</h2>
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                             <input type="text" placeholder="Search chats..."
-                                className="w-full pl-10 pr-4 py-3 rounded-2xl bg-slate-50 border-none outline-none focus:ring-2 focus:ring-primary/20 text-sm font-medium"
+                                className="input-modern w-full pl-10 pr-4 py-3 text-sm"
                                 value={searchTerm} onChange={e => setSearchTerm(e.target.value)} />
                         </div>
                     </div>
                     <div className="flex-grow overflow-y-auto overflow-x-hidden p-2 space-y-1">
                         {filteredConversations.map((chat) => (
                             <button key={chat.id} onClick={() => { setActiveChat(chat); setShowInfo(false); }}
-                                className={cn("w-full p-4 rounded-3xl flex items-center gap-4 transition-all relative",
-                                    activeChat?.id === chat.id ? "bg-primary/10" : "hover:bg-slate-50")}>
+                                className={cn("w-full p-4 rounded-2xl flex items-center gap-4 transition-all relative group",
+                                    activeChat?.id === chat.id ? "bg-primary/8 border border-primary/15" : "hover:bg-slate-50 border border-transparent")}>
                                 <div className="relative">
                                     <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-sm">
                                         <img src={chat.image} className="w-full h-full object-cover" />
                                     </div>
-                                    {chat.online && <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>}
+                                    {chat.online && <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white"></div>}
                                 </div>
-                                <div className="flex-grow text-left">
+                                <div className="flex-grow text-left min-w-0">
                                     <div className="flex justify-between items-start mb-0.5">
                                         <h4 className="font-bold text-slate-900 text-sm">{chat.name}</h4>
-                                        <span className="text-[10px] text-slate-400 font-bold">{chat.time}</span>
+                                        <span className="text-[10px] text-slate-400 font-bold shrink-0 ml-2">{chat.time}</span>
                                     </div>
-                                    <p className="text-xs text-slate-500 truncate w-40">{chat.lastMessage}</p>
+                                    <p className="text-xs text-slate-500 truncate">{chat.lastMessage}</p>
                                 </div>
                                 {chat.unread > 0 && (
-                                    <div className="bg-primary text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
+                                    <div className="bg-primary text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shrink-0 animate-pulse">
                                         {chat.unread}
                                     </div>
                                 )}
@@ -128,27 +127,27 @@ const Messages = () => {
                 </div>
 
                 {/* Chat Window */}
-                <div className="flex-grow flex flex-col bg-slate-50/30">
+                <div className="flex-grow flex flex-col bg-slate-50/40">
                     {activeChat ? (
                         <>
                             {/* Chat Header */}
-                            <div className="p-6 bg-white border-b border-slate-100 flex items-center justify-between">
+                            <div className="p-5 bg-white/95 backdrop-blur-lg border-b border-slate-100/80 flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <button className="md:hidden p-2 text-slate-400" onClick={() => setActiveChat(null)}>
                                         <ChevronLeft className="w-6 h-6" />
                                     </button>
-                                    <div className="w-12 h-12 rounded-2xl overflow-hidden border border-slate-100 shadow-sm relative">
+                                    <div className="w-11 h-11 rounded-xl overflow-hidden border border-slate-100 shadow-sm relative avatar-glow">
                                         <img src={activeChat.image} className="w-full h-full object-cover" />
                                     </div>
                                     <div>
-                                        <h3 className="font-black text-slate-900 leading-none mb-1">{activeChat.name}</h3>
+                                        <h3 className="font-extrabold text-slate-900 leading-none mb-1 text-sm">{activeChat.name}</h3>
                                         <span className="text-xs font-bold text-primary flex items-center gap-1.5">
                                             <div className={cn("w-1.5 h-1.5 rounded-full", activeChat.online ? "bg-emerald-500" : "bg-slate-300")}></div>
                                             {activeChat.role}
                                         </span>
                                     </div>
                                 </div>
-                                <div className="flex gap-2">
+                                <div className="flex gap-1.5">
                                     <Button variant="ghost" size="icon" className="rounded-xl text-slate-400 hover:text-blue-500 hover:bg-blue-50"
                                         onClick={() => toast(`📞 Calling ${activeChat.name}…`)}>
                                         <Phone className="w-5 h-5" />
@@ -167,18 +166,26 @@ const Messages = () => {
                             <div className="flex flex-grow overflow-hidden">
                                 {/* Messages Area */}
                                 <div className="flex-grow overflow-y-auto p-6 space-y-4">
-                                    {messages.map((msg) => (
-                                        <div key={msg.id} className={cn("flex", msg.sender === 'me' ? "justify-end" : "justify-start")}>
-                                            <div className={cn("max-w-[70%] p-4 rounded-3xl relative shadow-sm",
-                                                msg.sender === 'me' ? "bg-primary text-white rounded-tr-none" : "bg-white text-slate-700 rounded-tl-none border border-slate-100")}>
+                                    {messages.map((msg, index) => (
+                                        <motion.div
+                                            key={msg.id}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: index * 0.03 }}
+                                            className={cn("flex", msg.sender === 'me' ? "justify-end" : "justify-start")}
+                                        >
+                                            <div className={cn("max-w-[70%] p-4 rounded-3xl relative shadow-sm transition-shadow hover:shadow-md",
+                                                msg.sender === 'me'
+                                                    ? "bg-gradient-to-br from-primary to-primary-dark text-white rounded-tr-lg"
+                                                    : "bg-white text-slate-700 rounded-tl-lg border border-slate-100")}>
                                                 <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
                                                 <div className={cn("flex items-center gap-1 mt-2 text-[10px] font-bold",
-                                                    msg.sender === 'me' ? "text-white/70 justify-end" : "text-slate-400")}>
+                                                    msg.sender === 'me' ? "text-white/60 justify-end" : "text-slate-400")}>
                                                     {msg.timestamp}
                                                     {msg.sender === 'me' && <CheckCheck className="w-3 h-3" />}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     ))}
                                 </div>
 
@@ -189,18 +196,18 @@ const Messages = () => {
                                             className="bg-white border-l border-slate-100 overflow-hidden flex-shrink-0">
                                             <div className="p-5">
                                                 <div className="flex items-center justify-between mb-4">
-                                                    <h4 className="font-black text-slate-900 text-sm">Contact Info</h4>
-                                                    <button onClick={() => setShowInfo(false)} className="text-slate-400 hover:text-slate-700"><X className="w-4 h-4" /></button>
+                                                    <h4 className="font-extrabold text-slate-900 text-sm">Contact Info</h4>
+                                                    <button onClick={() => setShowInfo(false)} className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-50 transition-colors"><X className="w-4 h-4" /></button>
                                                 </div>
-                                                <img src={activeChat.image} className="w-16 h-16 rounded-2xl mx-auto mb-3 object-cover" />
-                                                <p className="font-black text-slate-900 text-center mb-1">{activeChat.name}</p>
+                                                <img src={activeChat.image} className="w-16 h-16 rounded-2xl mx-auto mb-3 object-cover avatar-glow" />
+                                                <p className="font-extrabold text-slate-900 text-center text-sm mb-1">{activeChat.name}</p>
                                                 <p className="text-xs text-primary font-bold text-center mb-4">{activeChat.role}</p>
                                                 <div className="space-y-3 text-xs text-slate-600">
-                                                    <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                                                    <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                                                         <Phone className="w-3 h-3 text-slate-400" />
                                                         <span className="font-medium">{activeChat.phone}</span>
                                                     </div>
-                                                    <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                                                    <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
                                                         <Circle className={cn("w-3 h-3", activeChat.online ? "text-emerald-500 fill-emerald-500" : "text-slate-300 fill-slate-300")} />
                                                         <span className="font-medium">{activeChat.online ? 'Online now' : 'Last seen yesterday'}</span>
                                                     </div>
@@ -212,12 +219,12 @@ const Messages = () => {
                             </div>
 
                             {/* Input Area */}
-                            <form onSubmit={handleSendMessage} className="p-6 bg-white border-t border-slate-100">
-                                <div className="flex gap-4">
+                            <form onSubmit={handleSendMessage} className="p-5 bg-white/95 backdrop-blur-lg border-t border-slate-100/80">
+                                <div className="flex gap-3">
                                     <input type="text" placeholder="Type your message here..."
-                                        className="flex-grow bg-slate-50 border-none outline-none p-4 rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-700"
+                                        className="input-modern flex-grow py-3.5 pl-4 pr-4 text-sm"
                                         value={message} onChange={(e) => setMessage(e.target.value)} />
-                                    <Button type="submit" className="bg-primary hover:bg-primary-dark text-white rounded-2xl px-6 h-14 shadow-lg shadow-primary/20">
+                                    <Button type="submit" className="bg-gradient-to-br from-primary to-primary-dark text-white rounded-2xl px-6 h-13 shadow-lg shadow-primary/20 hover:shadow-xl transition-shadow">
                                         <Send className="w-5 h-5" />
                                     </Button>
                                 </div>
@@ -228,7 +235,7 @@ const Messages = () => {
                             <div className="w-24 h-24 bg-slate-100 rounded-[2.5rem] flex items-center justify-center mb-6 text-slate-200">
                                 <MessageCircle className="w-12 h-12" />
                             </div>
-                            <h3 className="text-2xl font-black text-slate-900 mb-2">Your Conversations</h3>
+                            <h3 className="text-2xl font-extrabold text-slate-900 mb-2">Your Conversations</h3>
                             <p className="text-slate-500 max-w-sm">Select a contact from the list to start chatting.</p>
                         </div>
                     )}
@@ -237,12 +244,5 @@ const Messages = () => {
         </div>
     );
 };
-
-const MessageCircle = ({ className }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-    </svg>
-);
 
 export default Messages;

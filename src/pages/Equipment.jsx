@@ -1,377 +1,256 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Plus,
-    Search,
-    Filter,
-    Tractor as TractorIcon,
-    ChevronRight,
-    Zap,
-    ShieldCheck,
-    MapPin,
-    Gauge,
-    Calendar,
-    X,
-    CheckCircle2,
-    IndianRupee
+    Search, Star, Filter, MapPin, Clock, Calendar, IndianRupee,
+    Tractor, Settings, X, CheckCircle2, AlertCircle, ChevronRight, Wrench
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { base44 } from '@/api/base44Client';
-import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useNavigate, Link } from 'react-router-dom';
-
-// Simple toast hook
-const useToast = () => {
-    const [toasts, setToasts] = useState([]);
-    const toast = (msg, type = 'success') => {
-        const id = Date.now();
-        setToasts(t => [...t, { id, msg, type }]);
-        setTimeout(() => setToasts(t => t.filter(x => x.id !== id)), 3000);
-    };
-    return { toasts, toast };
-};
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Equipment = () => {
-    const navigate = useNavigate();
-    const [equipment, setEquipment] = useState([]);
+    const [equipmentList, setEquipmentList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
-    const [activeType, setActiveType] = useState('All');
-    const [bookingItem, setBookingItem] = useState(null);
-    const { toasts, toast } = useToast();
+    const [selectedType, setSelectedType] = useState('All');
+    const [selectedEquipment, setSelectedEquipment] = useState(null);
+    const [bookingStep, setBookingStep] = useState(0);
+    const [bookingDates, setBookingDates] = useState({ start: '', end: '' });
 
     useEffect(() => {
-        loadEquipment();
+        base44.entities.Equipment.list("-created_date", 50).then(data => {
+            setEquipmentList(data.length > 0 ? data : mockEquipment);
+            setLoading(false);
+        }).catch(() => {
+            setEquipmentList(mockEquipment);
+            setLoading(false);
+        });
     }, []);
 
-    const loadEquipment = async () => {
-        setLoading(true);
-        try {
-            const data = await base44.entities.Equipment.list("-created_date", 50);
-            setEquipment(data.length > 0 ? data : mockEquipment);
-        } catch (e) {
-            setEquipment(mockEquipment);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const mockEquipment = [
-        {
-            id: 'e1',
-            name: 'John Deere 5310',
-            equipment_type: 'Tractor',
-            owner_email: 'tractor_hub@example.com',
-            hourly_rate: 800,
-            daily_rate: 6000,
-            fuel_included: false,
-            images: ['https://images.unsplash.com/photo-1593110050241-ee7ce35e9700?w=800&q=80'],
-            location_address: 'Wyra, Khammam',
-            state: 'Telangana',
-            district: 'Khammam',
-            status: 'Available',
-            condition: 'Excellent',
-            year: 2023
-        },
-        {
-            id: 'e2',
-            name: 'Kubota Combine Harvester',
-            equipment_type: 'Harvester',
-            owner_email: 'agri_rentals@example.com',
-            hourly_rate: 2500,
-            daily_rate: 18000,
-            fuel_included: true,
-            images: ['https://images.unsplash.com/photo-1594494424758-a24a597d2c6f?w=800&q=80'],
-            location_address: 'Agri Hub, Guntur',
-            state: 'Andhra Pradesh',
-            district: 'Guntur',
-            status: 'Available',
-            condition: 'New',
-            year: 2024
-        },
-        {
-            id: 'e3',
-            name: 'DJI Agras T40 Drone',
-            equipment_type: 'Drone',
-            owner_email: 'skytech@example.com',
-            hourly_rate: 1500,
-            daily_rate: 10000,
-            fuel_included: true,
-            images: ['https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=800&q=80'],
-            location_address: 'Tech Park, Hyderabad',
-            state: 'Telangana',
-            district: 'Hyderabad',
-            status: 'Busy',
-            condition: 'Excellent',
-            year: 2023
-        }
+        { id: 'e1', name: 'John Deere 5310 Tractor', type: 'Tractor', hourly_rate: 700, daily_rate: 3500, location: 'Khammam, Telangana', condition: 'Excellent', year: 2022, owner_name: 'AgriRental Hub', rating: 4.8, image_url: 'https://images.unsplash.com/photo-1605002657780-26e7d31d8e0c?w=600', status: 'Available' },
+        { id: 'e2', name: 'Mahindra Rotavator', type: 'Rotavator', hourly_rate: 500, daily_rate: 2500, location: 'Warangal, Telangana', condition: 'Good', year: 2021, owner_name: 'Farm Solutions', rating: 4.6, image_url: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600', status: 'Available' },
+        { id: 'e3', name: 'Kubota Combine Harvester', type: 'Harvester', hourly_rate: 1200, daily_rate: 8000, location: 'Guntur, AP', condition: 'Excellent', year: 2023, owner_name: 'Harvest King', rating: 4.9, image_url: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=600', status: 'Available' },
+        { id: 'e4', name: 'Sprayer Drone DJI Agras', type: 'Drone', hourly_rate: 2000, daily_rate: 12000, location: 'Hyderabad, Telangana', condition: 'New', year: 2024, owner_name: 'AgroDrone Tech', rating: 5.0, image_url: 'https://images.unsplash.com/photo-1508614589041-895b88991e3e?w=600', status: 'Available' },
+        { id: 'e5', name: 'Seed Drill Machine', type: 'Seed Drill', hourly_rate: 400, daily_rate: 2000, location: 'Nalgonda, Telangana', condition: 'Good', year: 2020, owner_name: 'Kisan Equipment', rating: 4.3, image_url: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600', status: 'Rented' },
     ];
 
-    const types = ['All', 'Tractor', 'Harvester', 'Rotavator', 'Drone', 'Sprayer'];
+    const equipTypes = ['All', 'Tractor', 'Rotavator', 'Harvester', 'Drone', 'Seed Drill'];
+    const filtered = equipmentList.filter(e =>
+        (selectedType === 'All' || e.type === selectedType) &&
+        (e.name.toLowerCase().includes(searchTerm.toLowerCase()) || e.location?.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
 
-    const filtered = equipment.filter(e => {
-        const matchesSearch = e.name.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesType = activeType === 'All' || e.equipment_type === activeType;
-        return matchesSearch && matchesType;
-    });
+    const conditionColors = { 'New': 'bg-emerald-50 text-emerald-700 border-emerald-100', 'Excellent': 'bg-blue-50 text-blue-700 border-blue-100', 'Good': 'bg-amber-50 text-amber-700 border-amber-100' };
+
+    const handleBooking = () => {
+        setBookingStep(2);
+        setTimeout(() => { setBookingStep(0); setSelectedEquipment(null); }, 2500);
+    };
 
     return (
-        <div className="container mx-auto px-4 pb-20">
-            {/* Toast notifications */}
-            <div className="fixed top-24 right-4 z-[200] flex flex-col gap-2 pointer-events-none">
-                <AnimatePresence>
-                    {toasts.map(t => (
-                        <motion.div
-                            key={t.id}
-                            initial={{ opacity: 0, x: 80 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: 80 }}
-                            className={cn(
-                                "px-5 py-3 rounded-2xl shadow-xl text-sm font-bold flex items-center gap-2",
-                                t.type === 'success' ? "bg-emerald-600 text-white" : "bg-red-500 text-white"
-                            )}
-                        >
-                            <CheckCircle2 className="w-4 h-4" /> {t.msg}
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
+        <div className="container mx-auto px-4 pb-20 page-transition">
+            {/* Header */}
+            <div className="mb-12">
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                    <div className="flex items-center gap-3 text-primary font-bold text-sm uppercase tracking-widest mb-3">
+                        <Wrench className="w-4 h-4" />
+                        Equipment Hub
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight mb-4 heading-decoration">Rent Equipment</h1>
+                    <p className="text-slate-500 text-lg max-w-2xl mt-6">Modern agricultural machinery available for rent at competitive rates, from tractors to drones.</p>
+                </motion.div>
             </div>
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                <div>
-                    <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2">Equipment Rental</h1>
-                    <p className="text-slate-500">Rent modern agricultural machinery at competitive rates.</p>
-                </div>
-                <Button
-                    className="btn-premium h-14 px-8 rounded-[1.25rem] shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)] text-[15px]"
-                    onClick={() => navigate('/login')}
-                >
-                    <Plus className="w-5 h-5 mr-2" />
-                    List Your Equipment
-                </Button>
-            </div>
-
-            {/* Filter Bar */}
-            <div className="glass p-4 rounded-3xl border border-white/60 shadow-xl shadow-slate-200/50 mb-12 flex flex-col lg:flex-row gap-4 items-center">
+            {/* Filters */}
+            <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="bg-white/80 backdrop-blur-lg rounded-[2rem] shadow-card border border-slate-200/40 p-6 mb-10 flex flex-col md:flex-row gap-5 items-center"
+            >
                 <div className="relative flex-grow w-full">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                    <input
-                        type="text"
-                        placeholder="Search tractor, harvester, drone..."
-                        className="w-full pl-14 pr-4 py-4 rounded-2xl bg-white/50 backdrop-blur-md border border-slate-200/50 outline-none focus:bg-white focus:ring-2 focus:ring-primary/30 transition-all font-semibold text-slate-800 shadow-sm"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <input type="text" placeholder="Search equipment by name or location..." value={searchTerm}
+                        onChange={e => setSearchTerm(e.target.value)}
+                        className="input-modern w-full pl-11 pr-4 py-3.5 text-sm" />
                 </div>
-                <div className="flex gap-2 overflow-x-auto pb-2 lg:pb-0">
-                    {types.map(t => (
-                        <button
-                            key={t}
-                            onClick={() => setActiveType(t)}
-                            className={cn(
-                                "px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap shadow-sm",
-                                activeType === t
-                                    ? "bg-gradient-to-tr from-primary-darkest to-primary text-white shadow-[0_10px_20px_-5px_rgba(5,150,105,0.4)] transform -translate-y-0.5 border-transparent"
-                                    : "bg-white border text-slate-600 border-slate-200/60 hover:bg-slate-50 hover:text-slate-900"
-                            )}
-                        >
-                            {t}
+                <div className="flex gap-2 flex-wrap shrink-0">
+                    {equipTypes.map(type => (
+                        <button key={type} onClick={() => setSelectedType(type)}
+                            className={cn("px-5 py-2.5 rounded-xl text-xs font-bold transition-all duration-300 border",
+                                selectedType === type
+                                    ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                                    : "bg-white text-slate-600 border-slate-200 hover:border-primary/30 hover:text-primary hover:shadow-sm")}>
+                            {type}
                         </button>
                     ))}
                 </div>
-            </div>
+            </motion.div>
 
+            {/* Grid */}
             {loading ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {[1, 2, 3].map(i => <div key={i} className="h-96 bg-slate-50 rounded-3xl animate-pulse"></div>)}
+                    {[1, 2, 3].map(i => <div key={i} className="h-96 rounded-[2rem] skeleton"></div>)}
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <AnimatePresence>
-                        {filtered.map((item, i) => (
-                            <motion.div
-                                key={item.id}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: i * 0.1 }}
-                            >
-                                <EquipmentCard item={item} onBook={() => setBookingItem(item)} />
+                        {filtered.map((item, index) => (
+                            <motion.div key={item.id} layout
+                                initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }}
+                                transition={{ delay: index * 0.06 }}>
+                                <Card className="overflow-hidden rounded-[2rem] border border-slate-200/40 shadow-card bg-white/80 backdrop-blur-lg card-hover group h-full flex flex-col">
+                                    <div className="relative h-52 overflow-hidden">
+                                        <img src={item.image_url || 'https://images.unsplash.com/photo-1605002657780-26e7d31d8e0c?w=600'}
+                                            alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent"></div>
+                                        {/* Status */}
+                                        <div className="absolute top-4 left-4">
+                                            <span className={cn("px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md border flex items-center gap-1.5",
+                                                item.status === 'Available' ? 'bg-emerald-500/90 text-white border-emerald-400/30' : 'bg-white/90 text-slate-600 border-white/50')}>
+                                                {item.status === 'Available' && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />}
+                                                {item.status}
+                                            </span>
+                                        </div>
+                                        {/* Rating */}
+                                        {item.rating && (
+                                            <div className="absolute top-4 right-4 px-2.5 py-1.5 rounded-lg bg-black/40 backdrop-blur-md flex items-center gap-1 text-xs font-bold text-white border border-white/10">
+                                                <Star className="w-3 h-3 text-amber-400 fill-amber-400" /> {item.rating}
+                                            </div>
+                                        )}
+                                        <div className="absolute bottom-4 left-4 right-4">
+                                            <h3 className="font-extrabold text-white text-xl tracking-tight drop-shadow-lg">{item.name}</h3>
+                                            <p className="text-white/80 text-xs font-medium flex items-center gap-1 mt-1">
+                                                <MapPin className="w-3 h-3" /> {item.location}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <CardContent className="p-6 flex flex-col flex-grow">
+                                        <div className="flex flex-wrap gap-2 mb-5">
+                                            <span className={cn("px-2.5 py-1 rounded-lg text-[10px] font-bold border", conditionColors[item.condition] || 'bg-slate-50 text-slate-600 border-slate-100')}>
+                                                {item.condition}
+                                            </span>
+                                            {item.year && (
+                                                <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-50 text-slate-600 border border-slate-100">
+                                                    {item.year}
+                                                </span>
+                                            )}
+                                            <span className="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-primary/5 text-primary border border-primary/10">
+                                                {item.type}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-end justify-between mb-5 mt-auto">
+                                            <div>
+                                                <div className="text-xs text-slate-500 font-medium mb-1">From</div>
+                                                <div className="flex items-center gap-1">
+                                                    <IndianRupee className="w-4 h-4 text-primary" />
+                                                    <span className="text-2xl font-extrabold text-slate-900">{item.hourly_rate}</span>
+                                                    <span className="text-xs text-slate-500 font-medium">/hr</span>
+                                                </div>
+                                            </div>
+                                            <div className="text-right text-xs text-slate-500 font-medium">
+                                                or ₹{item.daily_rate?.toLocaleString()}/day
+                                            </div>
+                                        </div>
+                                        <Button variant="premium" className="w-full rounded-2xl h-12 font-bold"
+                                            onClick={() => { setSelectedEquipment(item); setBookingStep(1); }}>
+                                            Review & Rent
+                                        </Button>
+                                    </CardContent>
+                                </Card>
                             </motion.div>
                         ))}
                     </AnimatePresence>
                 </div>
             )}
 
+            {!loading && filtered.length === 0 && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20">
+                    <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
+                        <Tractor className="w-10 h-10" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-2">No equipment found</h3>
+                    <p className="text-slate-500">Try adjusting your search or filters.</p>
+                </motion.div>
+            )}
+
             {/* Booking Modal */}
             <AnimatePresence>
-                {bookingItem && (
-                    <BookingModal
-                        item={bookingItem}
-                        onClose={() => setBookingItem(null)}
-                        onConfirm={(days) => {
-                            setBookingItem(null);
-                            toast(`Booking confirmed for ${bookingItem.name} — ${days} day(s)!`);
-                        }}
-                    />
+                {selectedEquipment && (
+                    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => { setSelectedEquipment(null); setBookingStep(0); }} />
+                        <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl p-8 z-10">
+                            <button onClick={() => { setSelectedEquipment(null); setBookingStep(0); }}
+                                className="absolute top-5 right-5 p-2 hover:bg-slate-100 rounded-xl transition-colors">
+                                <X className="w-5 h-5 text-slate-500" />
+                            </button>
+
+                            {bookingStep === 2 ? (
+                                <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
+                                    <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce-in">
+                                        <CheckCircle2 className="w-10 h-10" />
+                                    </div>
+                                    <h3 className="text-2xl font-extrabold text-slate-900 mb-2">Booking Confirmed!</h3>
+                                    <p className="text-slate-500 font-medium">{selectedEquipment.name} has been reserved for you.</p>
+                                </motion.div>
+                            ) : (
+                                <div>
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="w-16 h-16 rounded-2xl overflow-hidden border border-slate-100 shadow-sm shrink-0">
+                                            <img src={selectedEquipment.image_url || 'https://images.unsplash.com/photo-1605002657780-26e7d31d8e0c?w=100'} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-extrabold text-slate-900">{selectedEquipment.name}</h3>
+                                            <p className="text-sm text-primary font-bold">{selectedEquipment.owner_name}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-5 mb-8">
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Start Date</label>
+                                            <input type="date" className="input-modern w-full pl-4" value={bookingDates.start}
+                                                onChange={e => setBookingDates({ ...bookingDates, start: e.target.value })} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">End Date</label>
+                                            <input type="date" className="input-modern w-full pl-4" value={bookingDates.end}
+                                                onChange={e => setBookingDates({ ...bookingDates, end: e.target.value })} />
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-slate-50 rounded-2xl p-5 mb-8 border border-slate-100 space-y-3">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Hourly Rate</span>
+                                            <span className="font-bold text-slate-900">₹{selectedEquipment.hourly_rate}/hr</span>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-slate-500">Daily Rate</span>
+                                            <span className="font-bold text-slate-900">₹{selectedEquipment.daily_rate}/day</span>
+                                        </div>
+                                        <div className="border-t border-slate-200 pt-3 flex justify-between text-sm">
+                                            <span className="text-slate-500 font-bold">Owner</span>
+                                            <span className="font-bold text-primary">{selectedEquipment.owner_name}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <Button variant="outline" className="flex-1 rounded-2xl h-13 font-bold"
+                                            onClick={() => { setSelectedEquipment(null); setBookingStep(0); }}>Cancel</Button>
+                                        <Button variant="premium" className="flex-1 rounded-2xl h-13 font-bold"
+                                            onClick={handleBooking}>Confirm Booking</Button>
+                                    </div>
+                                </div>
+                            )}
+                        </motion.div>
+                    </div>
                 )}
             </AnimatePresence>
         </div>
     );
 };
-
-const BookingModal = ({ item, onClose, onConfirm }) => {
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [booked, setBooked] = useState(false);
-
-    const days = startDate && endDate
-        ? Math.max(1, Math.ceil((new Date(endDate) - new Date(startDate)) / 86400000))
-        : 1;
-    const total = days * item.daily_rate;
-
-    const handleConfirm = async () => {
-        if (!startDate || !endDate) return;
-        setLoading(true);
-        await new Promise(r => setTimeout(r, 900));
-        setLoading(false);
-        setBooked(true);
-        setTimeout(() => onConfirm(days), 1500);
-    };
-
-    return (
-        <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-            <motion.div
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"
-                onClick={onClose}
-            />
-            <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="relative bg-white w-full max-w-md rounded-[2rem] shadow-2xl p-8 z-10"
-            >
-                <button onClick={onClose} className="absolute top-5 right-5 p-2 hover:bg-slate-100 rounded-xl transition-all">
-                    <X className="w-5 h-5 text-slate-500" />
-                </button>
-
-                {booked ? (
-                    <div className="text-center py-8">
-                        <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
-                            <CheckCircle2 className="w-10 h-10" />
-                        </div>
-                        <h3 className="text-2xl font-black text-slate-900 mb-2">Booking Confirmed!</h3>
-                        <p className="text-slate-500">Your request for <b>{item.name}</b> has been sent.</p>
-                    </div>
-                ) : (
-                    <>
-                        <div className="flex items-center gap-4 mb-6">
-                            <img src={item.images?.[0]} className="w-16 h-16 rounded-2xl object-cover" />
-                            <div>
-                                <h3 className="font-black text-slate-900 text-lg leading-tight">{item.name}</h3>
-                                <p className="text-primary font-bold text-sm">₹{item.daily_rate.toLocaleString()}/day</p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 mb-6">
-                            <div>
-                                <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">Start Date</label>
-                                <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)}
-                                    min={new Date().toISOString().split('T')[0]}
-                                    className="w-full bg-slate-50 border border-slate-100 p-3 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 font-semibold text-slate-700" />
-                            </div>
-                            <div>
-                                <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">End Date</label>
-                                <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)}
-                                    min={startDate || new Date().toISOString().split('T')[0]}
-                                    className="w-full bg-slate-50 border border-slate-100 p-3 rounded-2xl outline-none focus:ring-2 focus:ring-primary/20 font-semibold text-slate-700" />
-                            </div>
-                        </div>
-
-                        {startDate && endDate && (
-                            <div className="bg-slate-50 rounded-2xl p-4 mb-6 border border-slate-100">
-                                <div className="flex justify-between text-sm mb-1">
-                                    <span className="text-slate-500 font-medium">{days} day(s) × ₹{item.daily_rate.toLocaleString()}</span>
-                                    <span className="font-black text-slate-900">₹{total.toLocaleString()}</span>
-                                </div>
-                                {item.fuel_included && <p className="text-xs text-emerald-600 font-bold">✓ Fuel included</p>}
-                            </div>
-                        )}
-
-                        <Button
-                            className="btn-premium w-full h-14 rounded-[1.25rem] text-base shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)]"
-                            disabled={!startDate || !endDate || loading}
-                            onClick={handleConfirm}
-                        >
-                            {loading ? (
-                                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            ) : 'Confirm Booking'}
-                        </Button>
-                    </>
-                )}
-            </motion.div>
-        </div>
-    );
-};
-
-const EquipmentCard = ({ item, onBook }) => (
-    <Card className="glass-card overflow-hidden border-white/60 hover:border-primary/20 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col">
-        <div className="relative h-56 overflow-hidden rounded-t-[2.5rem] m-2">
-            <img src={item.images?.[0]} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-t-[2rem]" />
-            <div className="absolute top-4 left-4">
-                <span className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg border border-white/20", item.status === 'Available' ? 'bg-emerald-500/90 text-white' : 'bg-rose-500/90 text-white')}>
-                    {item.status}
-                </span>
-            </div>
-            <div className="absolute top-4 right-4">
-                <div className="bg-white/90 backdrop-blur-md p-2 rounded-xl text-primary shadow-lg">
-                    <ShieldCheck className="w-5 h-5" />
-                </div>
-            </div>
-            <div className="absolute bottom-4 left-4 right-4">
-                <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-500">Hourly Rate</span>
-                    <span className="text-lg font-black text-slate-900">₹{item.hourly_rate}</span>
-                </div>
-            </div>
-        </div>
-        <CardContent className="p-8 flex-grow flex flex-col">
-            <div className="flex items-center gap-2 mb-2 text-primary font-bold text-xs uppercase tracking-widest">
-                <TractorIcon className="w-4 h-4" />
-                {item.equipment_type}
-            </div>
-            <h3 className="text-2xl font-black text-slate-900 mb-2 truncate">{item.name}</h3>
-            <div className="flex items-center gap-2 text-slate-500 text-sm mb-6">
-                <MapPin className="w-4 h-4" />
-                <span>{item.district}, {item.state}</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-center">
-                    <Gauge className="w-5 h-5 text-slate-400 mb-2" />
-                    <span className="text-xs font-bold text-slate-700">{item.condition}</span>
-                </div>
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-center">
-                    <Calendar className="w-5 h-5 text-slate-400 mb-2" />
-                    <span className="text-xs font-bold text-slate-700">{item.year} Model</span>
-                </div>
-            </div>
-
-            <Button
-                onClick={onBook}
-                disabled={item.status !== 'Available'}
-                className={cn(
-                    "w-full mt-auto h-14 rounded-2xl transition-all shadow-lg text-white font-black flex items-center justify-center gap-2 group/btn",
-                    item.status === 'Available' ? "bg-slate-900 hover:bg-primary" : "bg-slate-300 cursor-not-allowed"
-                )}
-            >
-                {item.status === 'Available' ? 'Review & Rent' : 'Currently Busy'}
-                {item.status === 'Available' && <ChevronRight className="w-5 h-5 group-hover/btn:translate-x-1 transition-transform" />}
-            </Button>
-        </CardContent>
-    </Card>
-);
 
 export default Equipment;
