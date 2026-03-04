@@ -1,16 +1,84 @@
-# React + Vite
+# 🌱 AgriLink (AgriShare)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Built for the future of Indian agriculture.
 
-Currently, two official plugins are available:
+AgriLink is a comprehensive, modern web platform designed to empower farmers and streamline agricultural processes. From land monitoring and equipment rentals to AI-powered crop advisory and multilingual support, AgriLink provides all the essential tools for modern farming in one accessible place.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
 
-## React Compiler
+- **🗺️ Land Monitoring:** Track and manage farmlands with interactive maps.
+- **🚜 Equipment Rental:** Browse, rent, and manage agricultural machinery.
+- **👨‍🌾 Hire Workers:** Seamlessly connect with skilled agricultural laborers.
+- **🚚 Transport Services:** Arrange logistics and transportation for produce and supplies.
+- **🌾 AI Crop Advisor:** Get intelligent insights and recommendations for crop management.
+- **📊 Market Prices & Govt Schemes:** Stay updated on current market rates and relevant government initiatives.
+- **📅 Crop Calendar:** Plan and track planting, treating, and harvesting schedules.
+- **💬 Messaging System:** Communicate directly within the platform.
+- **🌐 Multilingual Support (i18n):** Accessible to farmers in multiple languages.
+- **🎙️ Voice Assistant:** Integrated floating voice assistant for hands-free queries and navigation.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🛠️ Technology Stack
 
-## Expanding the ESLint configuration
+This project is built using modern web development technologies to ensure high performance, accessibility, and a great developer experience.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Framework:** React 19 + Vite
+- **Routing:** React Router v7
+- **Styling:** Tailwind CSS v4, `clsx`, `tailwind-merge`
+- **UI Components:** Radix UI Primitives (Accessible, unstyled components)
+- **Animations:** Framer Motion
+- **Data Visualization:** Recharts
+- **Icons:** Lucide React
+
+## 📦 Getting Started
+
+### Prerequisites
+
+Ensure you have [Node.js](https://nodejs.org/) (v18 or newer recommended) installed on your machine.
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/adithyayanamalamanda/AgriShare.git
+   cd AgriShare
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for production**
+   ```bash
+   npm run build
+   ```
+
+5. **Preview production build**
+   ```bash
+   npm run preview
+   ```
+
+## 📁 Project Structure
+
+```
+src/
+├── api/            # API client configurations (e.g., base44Client)
+├── assets/         # Static assets (images, fonts, etc.)
+├── components/     # Reusable UI components (VoiceAssistant, etc.)
+├── i18n/           # Internationalization configurations and contexts
+├── lib/            # Utility functions (e.g., cn utility)
+├── pages/          # Application routes/pages (Home, Lands, Equipment, etc.)
+├── App.jsx         # Main application component and routing setup
+├── Layout.jsx      # Global layout including Navbar and Footer
+├── index.css       # Global styles and Tailwind directives
+└── main.jsx        # Application entry point
+```
+
+## 📄 License
+
+&copy; AgriLink. All rights reserved.
