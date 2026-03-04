@@ -66,31 +66,42 @@ const Layout = ({ children }) => {
         <div className="min-h-screen bg-slate-50 flex flex-col font-inter">
             {/* Navbar */}
             <nav className={cn(
-                "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-                scrolled ? "glass py-2 shadow-sm" : "bg-transparent py-4"
+                "fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b",
+                scrolled
+                    ? "bg-white/90 backdrop-blur-2xl border-slate-200/60 shadow-[0_2px_20px_rgba(15,23,42,0.08)] py-2"
+                    : "bg-transparent backdrop-blur-sm border-transparent py-4"
             )}>
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="flex items-center justify-between">
                         <Link to="/" className="flex items-center gap-2 group">
-                            <div className="bg-primary p-2 rounded-xl group-hover:rotate-12 transition-transform">
+                            <div className="premium-gradient p-2.5 rounded-xl group-hover:rotate-12 transition-transform shadow-lg shadow-primary/20">
                                 <Leaf className="text-white w-6 h-6" />
                             </div>
-                            <span className="text-2xl font-bold text-primary-darkest tracking-tight">AgriLink</span>
+                            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-darkest to-primary tracking-tight">AgriLink</span>
                         </Link>
 
                         {/* Desktop Nav */}
-                        <div className="hidden lg:flex items-center gap-1">
+                        <div className="hidden lg:flex items-center gap-1 p-1.5 glass rounded-2xl mx-4">
                             {navLinks.map((link) => (
                                 <NavLink
                                     key={link.path}
                                     to={link.path}
                                     className={({ isActive }) => cn(
-                                        "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:bg-primary/10",
-                                        isActive ? "text-primary bg-primary/10" : "text-slate-600 hover:text-primary"
+                                        "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 relative group",
+                                        isActive
+                                            ? "text-primary bg-primary/10 shadow-sm"
+                                            : "text-slate-600 hover:text-primary hover:bg-slate-50"
                                     )}
                                 >
-                                    <link.icon className="w-4 h-4" />
-                                    {link.name}
+                                    {({ isActive }) => (
+                                        <>
+                                            <link.icon className="w-4 h-4" />
+                                            {link.name}
+                                            {isActive && (
+                                                <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />
+                                            )}
+                                        </>
+                                    )}
                                 </NavLink>
                             ))}
                         </div>
@@ -126,18 +137,18 @@ const Layout = ({ children }) => {
 
                             {user ? (
                                 <div className="flex items-center gap-3">
-                                    <Link to="/profile" className="flex items-center gap-2 group p-1 pr-3 rounded-full hover:bg-slate-100 transition-all">
-                                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary border border-primary/30 overflow-hidden">
+                                    <Link to="/profile" className="flex items-center gap-2.5 group p-1 pr-4 rounded-full hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+                                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 flex items-center justify-center text-primary border border-primary/20 overflow-hidden shadow-sm">
                                             {user.profile_image ? <img src={user.profile_image} className="w-full h-full object-cover" /> : <User className="w-5 h-5" />}
                                         </div>
-                                        <span className="text-sm font-semibold text-slate-700">{user.full_name?.split(' ')[0]}</span>
+                                        <span className="text-sm font-bold text-slate-700 group-hover:text-primary transition-colors">{user.full_name?.split(' ')[0]}</span>
                                     </Link>
-                                    <button onClick={() => base44.auth.logout().then(() => window.location.reload())} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                                    <button onClick={() => base44.auth.logout().then(() => window.location.reload())} className="p-2 text-slate-300 hover:text-red-500 transition-colors rounded-xl hover:bg-red-50">
                                         <LogOut className="w-5 h-5" />
                                     </button>
                                 </div>
                             ) : (
-                                <Button variant="premium" onClick={() => navigate('/login')}>Login</Button>
+                                <button className="btn-premium text-sm py-2.5 px-5 rounded-xl" onClick={() => navigate('/login')}>Login</button>
                             )}
                         </div>
 
@@ -189,78 +200,76 @@ const Layout = ({ children }) => {
             </main>
 
             {/* Footer */}
-            <footer className="bg-slate-900 text-slate-300 py-12 px-4">
+            <footer className="bg-slate-950 text-slate-300 pt-16 pb-8 px-4 border-t-4 border-primary">
                 <div className="container mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8">
                         <div className="col-span-1 md:col-span-1">
-                            <Link to="/" className="flex items-center gap-2 mb-4">
-                                <Leaf className="text-primary w-6 h-6" />
+                            <Link to="/" className="flex items-center gap-2 mb-6">
+                                <div className="bg-primary/20 p-2 rounded-xl">
+                                    <Leaf className="text-primary w-6 h-6" />
+                                </div>
                                 <span className="text-2xl font-bold text-white tracking-tight">AgriLink</span>
                             </Link>
-                            <p className="text-sm leading-relaxed mb-6">
+                            <p className="text-sm leading-relaxed mb-8 text-slate-400">
                                 {t('footer.tagline')}
                             </p>
                             <div className="flex gap-4">
-                                <button onClick={() => window.open('https://facebook.com', '_blank')} className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.77,7.46H14.5v-1.9c0-.9.6-1.1,1-1.1h3V.5h-4.33C10.24.5,9.5,3.44,9.5,5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4Z"/></svg>
+                                <button onClick={() => window.open('https://facebook.com', '_blank')} className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-primary hover:-translate-y-1 transition-all shadow-lg cursor-pointer text-white">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.77,7.46H14.5v-1.9c0-.9.6-1.1,1-1.1h3V.5h-4.33C10.24.5,9.5,3.44,9.5,5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4Z" /></svg>
                                 </button>
-                                <button onClick={() => window.open('https://twitter.com', '_blank')} className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.95,4.57a10,10,0,0,1-2.82.77,4.96,4.96,0,0,0,2.16-2.72,9.9,9.9,0,0,1-3.12,.76,4.96,4.96,0,0,0-8.45,4.52A14.11,14.11,0,0,1,1.64,3.16,4.96,4.96,0,0,0,3.2,9.72,4.86,4.86,0,0,1,.96,9.11v.06a4.93,4.93,0,0,0,3.95,4.83,4.86,4.86,0,0,1-2.22.08,4.93,4.93,0,0,0,4.6,3.42A9.87,9.87,0,0,1,0,19.54a13.94,13.94,0,0,0,7.55,2.21A13.9,13.9,0,0,0,21.56,7.68c0-.21,0-.42,0-.63A12.61,12.61,0,0,0,24,4.64Z"/></svg>
+                                <button onClick={() => window.open('https://twitter.com', '_blank')} className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-primary hover:-translate-y-1 transition-all shadow-lg cursor-pointer text-white">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.95,4.57a10,10,0,0,1-2.82.77,4.96,4.96,0,0,0,2.16-2.72,9.9,9.9,0,0,1-3.12,.76,4.96,4.96,0,0,0-8.45,4.52A14.11,14.11,0,0,1,1.64,3.16,4.96,4.96,0,0,0,3.2,9.72,4.86,4.86,0,0,1,.96,9.11v.06a4.93,4.93,0,0,0,3.95,4.83,4.86,4.86,0,0,1-2.22.08,4.93,4.93,0,0,0,4.6,3.42A9.87,9.87,0,0,1,0,19.54a13.94,13.94,0,0,0,7.55,2.21A13.9,13.9,0,0,0,21.56,7.68c0-.21,0-.42,0-.63A12.61,12.61,0,0,0,24,4.64Z" /></svg>
                                 </button>
-                                <button onClick={() => window.open('https://instagram.com', '_blank')} className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-primary transition-colors cursor-pointer">
-                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12,2.16c3.2,0,3.58,0,4.85.07,3.25.15,4.77,1.69,4.92,4.92.06,1.27.07,1.65.07,4.85s0,3.58-.07,4.85c-.15,3.23-1.66,4.77-4.92,4.92-1.27.06-1.65.07-4.85.07s-3.58,0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s0-3.58.07-4.85C2.38,3.92,3.9,2.38,7.15,2.23,8.42,2.18,8.8,2.16,12,2.16ZM12,0C8.74,0,8.33,0,7.05.07c-4.35.2-6.78,2.62-7,7C0,8.33,0,8.74,0,12s0,3.67.07,4.95c.2,4.36,2.62,6.78,7,7C8.33,24,8.74,24,12,24s3.67,0,4.95-.07c4.35-.2,6.78-2.62,7-7C24,15.67,24,15.26,24,12s0-3.67-.07-4.95c-.2-4.35-2.62-6.78-7-7C15.67,0,15.26,0,12,0Zm0,5.84A6.16,6.16,0,1,0,18.16,12,6.16,6.16,0,0,0,12,5.84ZM12,16a4,4,0,1,1,4-4A4,4,0,0,1,12,16ZM18.41,4.15a1.44,1.44,0,1,0,1.44,1.44A1.44,1.44,0,0,0,18.41,4.15Z"/></svg>
+                                <button onClick={() => window.open('https://instagram.com', '_blank')} className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center hover:bg-primary hover:-translate-y-1 transition-all shadow-lg cursor-pointer text-white">
+                                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12,2.16c3.2,0,3.58,0,4.85.07,3.25.15,4.77,1.69,4.92,4.92.06,1.27.07,1.65.07,4.85s0,3.58-.07,4.85c-.15,3.23-1.66,4.77-4.92,4.92-1.27.06-1.65.07-4.85.07s-3.58,0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92-.06-1.27-.07-1.65-.07-4.85s0-3.58.07-4.85C2.38,3.92,3.9,2.38,7.15,2.23,8.42,2.18,8.8,2.16,12,2.16ZM12,0C8.74,0,8.33,0,7.05.07c-4.35.2-6.78,2.62-7,7C0,8.33,0,8.74,0,12s0,3.67.07,4.95c.2,4.36,2.62,6.78,7,7C8.33,24,8.74,24,12,24s3.67,0,4.95-.07c4.35-.2,6.78-2.62,7-7C24,15.67,24,15.26,24,12s0-3.67-.07-4.95c-.2-4.35-2.62-6.78-7-7C15.67,0,15.26,0,12,0Zm0,5.84A6.16,6.16,0,1,0,18.16,12,6.16,6.16,0,0,0,12,5.84ZM12,16a4,4,0,1,1,4-4A4,4,0,0,1,12,16ZM18.41,4.15a1.44,1.44,0,1,0,1.44,1.44A1.44,1.44,0,0,0,18.41,4.15Z" /></svg>
                                 </button>
                             </div>
                         </div>
 
                         <div>
-                            <h4 className="text-white font-bold mb-4">Explore</h4>
-                            <ul className="space-y-2 text-sm">
-                                <li><Link to="/lands" className="hover:text-primary transition-colors">Land Monitoring</Link></li>
-                                <li><Link to="/equipment" className="hover:text-primary transition-colors">Equipment Rental</Link></li>
-                                <li><Link to="/workers" className="hover:text-primary transition-colors">Hire Workers</Link></li>
-                                <li><Link to="/transport" className="hover:text-primary transition-colors">Transport Services</Link></li>
+                            <h4 className="text-white font-bold mb-6 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary"></div> Explore</h4>
+                            <ul className="space-y-3 text-sm text-slate-400 border-l border-slate-800 pl-4">
+                                <li><Link to="/lands" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Land Monitoring</Link></li>
+                                <li><Link to="/equipment" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Equipment Rental</Link></li>
+                                <li><Link to="/workers" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Hire Workers</Link></li>
+                                <li><Link to="/transport" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Transport Services</Link></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 className="text-white font-bold mb-4">Resources</h4>
-                            <ul className="space-y-2 text-sm">
-                                <li><Link to="/dashboard" className="hover:text-primary transition-colors">AI Crop Advisor</Link></li>
-                                <li><Link to="/dashboard" className="hover:text-primary transition-colors">Market Prices</Link></li>
-                                <li><Link to="/dashboard" className="hover:text-primary transition-colors">Govt Schemes</Link></li>
-                                <li><Link to="/calendar" className="hover:text-primary transition-colors">Crop Calendar</Link></li>
+                            <h4 className="text-white font-bold mb-6 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary"></div> Resources</h4>
+                            <ul className="space-y-3 text-sm text-slate-400 border-l border-slate-800 pl-4">
+                                <li><Link to="/dashboard" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">AI Crop Advisor</Link></li>
+                                <li><Link to="/dashboard" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Market Prices</Link></li>
+                                <li><Link to="/dashboard" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Govt Schemes</Link></li>
+                                <li><Link to="/calendar" className="hover:text-primary transition-colors flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Crop Calendar</Link></li>
                             </ul>
                         </div>
 
                         <div>
-                            <h4 className="text-white font-bold mb-4">Support</h4>
-                            <ul className="space-y-2 text-sm">
-                                <li><button onClick={() => alert('Help Center - Coming Soon!')} className="hover:text-primary transition-colors text-left">Help Center</button></li>
-                                <li><button onClick={() => alert('Contact Us - Coming Soon!')} className="hover:text-primary transition-colors text-left">Contact Us</button></li>
-                                <li><button onClick={() => alert('Terms of Service - Coming Soon!')} className="hover:text-primary transition-colors text-left">Terms of Service</button></li>
-                                <li><button onClick={() => alert('Privacy Policy - Coming Soon!')} className="hover:text-primary transition-colors text-left">Privacy Policy</button></li>
+                            <h4 className="text-white font-bold mb-6 flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-primary"></div> Support</h4>
+                            <ul className="space-y-3 text-sm text-slate-400 border-l border-slate-800 pl-4">
+                                <li><button onClick={() => alert('Help Center - Coming Soon!')} className="hover:text-primary transition-colors text-left flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Help Center</button></li>
+                                <li><button onClick={() => alert('Contact Us - Coming Soon!')} className="hover:text-primary transition-colors text-left flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Contact Us</button></li>
+                                <li><button onClick={() => alert('Terms of Service - Coming Soon!')} className="hover:text-primary transition-colors text-left flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Terms of Service</button></li>
+                                <li><button onClick={() => alert('Privacy Policy - Coming Soon!')} className="hover:text-primary transition-colors text-left flex items-center gap-2 relative before:content-[''] before:w-1 before:h-1 before:bg-primary before:rounded-full before:absolute before:-left-5 before:opacity-0 hover:before:opacity-100 before:transition-all">Privacy Policy</button></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                        <p className="text-xs text-slate-500">
+                    <div className="border-t border-slate-800/60 mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                        <p className="text-sm text-slate-500 font-medium tracking-wide">
                             &copy; {new Date().getFullYear()} AgriLink. Built for the future of Indian agriculture.
                         </p>
                         <div className="flex gap-4">
-                            <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="border-slate-700 text-slate-400 hover:text-white hover:bg-slate-800 rounded-xl"
+                            <Button
+                                className="bg-slate-800 hover:bg-slate-700 text-white border-0 transition-all rounded-xl px-6"
                                 onClick={() => navigate('/login')}
                             >
                                 Login
                             </Button>
-                            <Button 
-                                variant="premium" 
-                                size="sm"
-                                className="rounded-xl"
+                            <Button
+                                className="btn-primary"
                                 onClick={() => navigate('/profile')}
                             >
                                 Get Started
@@ -273,9 +282,10 @@ const Layout = ({ children }) => {
             {/* Floating Voice Assistant Button */}
             <button
                 onClick={() => setVoiceOpen(true)}
-                className="fixed bottom-6 right-6 z-50 w-14 h-14 md:w-16 md:h-16 bg-primary hover:bg-primary-dark rounded-full shadow-2xl shadow-primary/30 flex items-center justify-center transition-all hover:scale-110 animate-bounce"
+                className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-tr from-primary-darkest to-primary rounded-full shadow-[0_10px_25px_rgba(5,150,105,0.4)] flex items-center justify-center transition-all hover:scale-110 animate-float border-2 border-white/20 hover:border-white/50 group"
             >
-                <Mic className="w-6 h-6 md:w-7 md:h-7 text-white" />
+                <Mic className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
+                <span className="absolute -inset-2 rounded-full border border-primary/30 animate-ping opacity-75"></span>
             </button>
 
             {/* Voice Assistant Modal */}

@@ -102,8 +102,7 @@ const Workers = () => {
                     <p className="text-slate-500">Hire experienced laborers and specialized operators for your farm.</p>
                 </div>
                 <Button
-                    variant="premium"
-                    className="h-14 px-8 rounded-2xl shadow-xl"
+                    className="btn-premium h-14 px-8 rounded-[1.25rem] shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)] text-[15px]"
                     onClick={() => navigate('/login')}
                 >
                     <Plus className="w-5 h-5 mr-2" />
@@ -111,13 +110,13 @@ const Workers = () => {
                 </Button>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-4 mb-12">
-                <div className="relative flex-grow">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="glass p-4 rounded-3xl border border-white/60 shadow-xl shadow-slate-200/50 mb-12 flex flex-col lg:flex-row gap-4 items-center">
+                <div className="relative flex-grow w-full">
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Search by name or skills..."
-                        className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white border border-slate-100 shadow-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-slate-700"
+                        className="w-full pl-14 pr-4 py-4 rounded-2xl bg-white/50 backdrop-blur-md border border-slate-200/50 outline-none focus:bg-white focus:ring-2 focus:ring-primary/30 transition-all font-semibold text-slate-800 shadow-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -128,8 +127,10 @@ const Workers = () => {
                             key={t}
                             onClick={() => setActiveTab(t)}
                             className={cn(
-                                "px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap",
-                                activeTab === t ? "bg-primary text-white shadow-lg" : "bg-white text-slate-500 border border-slate-100"
+                                "px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap shadow-sm",
+                                activeTab === t
+                                    ? "bg-gradient-to-tr from-primary-darkest to-primary text-white shadow-[0_10px_20px_-5px_rgba(5,150,105,0.4)] transform -translate-y-0.5 border-transparent"
+                                    : "bg-white border text-slate-600 border-slate-200/60 hover:bg-slate-50 hover:text-slate-900"
                             )}
                         >
                             {t}
@@ -163,14 +164,14 @@ const Workers = () => {
 };
 
 const WorkerCard = ({ item, navigate }) => (
-    <Card className="overflow-hidden border-none shadow-sm hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col">
-        <div className="relative h-48 premium-gradient p-8 text-center bg-slate-100">
-            <div className="relative inline-block">
-                <div className="w-24 h-24 rounded-3xl border-4 border-white overflow-hidden shadow-xl bg-slate-50 relative z-10">
+    <Card className="glass-card overflow-hidden border-white/60 hover:border-primary/20 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col m-1">
+        <div className="relative h-48 bg-gradient-to-br from-primary/10 to-primary/5 p-8 text-center rounded-t-[2.5rem] mt-2 mx-2">
+            <div className="relative inline-block mt-4">
+                <div className="w-28 h-28 rounded-3xl border-4 border-white overflow-hidden shadow-2xl shadow-primary/20 bg-slate-50 relative z-10 group-hover:scale-105 transition-transform duration-500">
                     <img src={item.profile_image} className="w-full h-full object-cover" />
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-2xl shadow-lg flex items-center justify-center text-emerald-500 z-20 border-2 border-white">
-                    <CheckCircle2 className="w-6 h-6" />
+                <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-white rounded-xl shadow-lg flex items-center justify-center text-emerald-500 z-20 border-2 border-white">
+                    <CheckCircle2 className="w-5 h-5 bg-emerald-100 rounded-full" />
                 </div>
             </div>
         </div>

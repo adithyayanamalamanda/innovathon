@@ -144,8 +144,7 @@ const Equipment = () => {
                     <p className="text-slate-500">Rent modern agricultural machinery at competitive rates.</p>
                 </div>
                 <Button
-                    variant="premium"
-                    className="h-14 px-8 rounded-2xl shadow-xl"
+                    className="btn-premium h-14 px-8 rounded-[1.25rem] shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)] text-[15px]"
                     onClick={() => navigate('/login')}
                 >
                     <Plus className="w-5 h-5 mr-2" />
@@ -154,13 +153,13 @@ const Equipment = () => {
             </div>
 
             {/* Filter Bar */}
-            <div className="flex flex-col lg:flex-row gap-4 mb-12">
-                <div className="relative flex-grow">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="glass p-4 rounded-3xl border border-white/60 shadow-xl shadow-slate-200/50 mb-12 flex flex-col lg:flex-row gap-4 items-center">
+                <div className="relative flex-grow w-full">
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder="Search tractor, harvester, drone..."
-                        className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white border border-slate-100 shadow-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-slate-700"
+                        className="w-full pl-14 pr-4 py-4 rounded-2xl bg-white/50 backdrop-blur-md border border-slate-200/50 outline-none focus:bg-white focus:ring-2 focus:ring-primary/30 transition-all font-semibold text-slate-800 shadow-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -171,8 +170,10 @@ const Equipment = () => {
                             key={t}
                             onClick={() => setActiveType(t)}
                             className={cn(
-                                "px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap",
-                                activeType === t ? "bg-primary text-white shadow-lg" : "bg-white text-slate-500 border border-slate-100"
+                                "px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap shadow-sm",
+                                activeType === t
+                                    ? "bg-gradient-to-tr from-primary-darkest to-primary text-white shadow-[0_10px_20px_-5px_rgba(5,150,105,0.4)] transform -translate-y-0.5 border-transparent"
+                                    : "bg-white border text-slate-600 border-slate-200/60 hover:bg-slate-50 hover:text-slate-900"
                             )}
                         >
                             {t}
@@ -300,8 +301,7 @@ const BookingModal = ({ item, onClose, onConfirm }) => {
                         )}
 
                         <Button
-                            variant="premium"
-                            className="w-full h-14 rounded-2xl text-base font-black"
+                            className="btn-premium w-full h-14 rounded-[1.25rem] text-base shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)]"
                             disabled={!startDate || !endDate || loading}
                             onClick={handleConfirm}
                         >
@@ -317,11 +317,11 @@ const BookingModal = ({ item, onClose, onConfirm }) => {
 };
 
 const EquipmentCard = ({ item, onBook }) => (
-    <Card className="overflow-hidden border-none shadow-sm hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col">
-        <div className="relative h-56 overflow-hidden">
-            <img src={item.images?.[0]} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+    <Card className="glass-card overflow-hidden border-white/60 hover:border-primary/20 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col">
+        <div className="relative h-56 overflow-hidden rounded-t-[2.5rem] m-2">
+            <img src={item.images?.[0]} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-t-[2rem]" />
             <div className="absolute top-4 left-4">
-                <span className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg", item.status === 'Available' ? 'bg-emerald-500/90 text-white' : 'bg-rose-500/90 text-white')}>
+                <span className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg border border-white/20", item.status === 'Available' ? 'bg-emerald-500/90 text-white' : 'bg-rose-500/90 text-white')}>
                     {item.status}
                 </span>
             </div>

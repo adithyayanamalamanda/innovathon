@@ -83,20 +83,20 @@ const Transport = () => {
                     <h1 className="text-4xl font-black text-slate-900 tracking-tight mb-2 underline decoration-primary decoration-4 underline-offset-8">Transport Services</h1>
                     <p className="text-slate-500 mt-4 font-medium">Book reliable transport for your produce and equipment.</p>
                 </div>
-                <Button variant="premium" className="h-14 px-8 rounded-2xl shadow-xl" onClick={() => navigate('/login')}>
+                <Button className="btn-premium h-14 px-8 rounded-[1.25rem] shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)] text-[15px]" onClick={() => navigate('/login')}>
                     <Plus className="w-5 h-5 mr-2" />
                     Become a Provider
                 </Button>
             </div>
 
-            <div className="flex flex-col lg:flex-row gap-4 mb-12">
-                <div className="relative flex-grow">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="glass p-4 rounded-3xl border border-white/60 shadow-xl shadow-slate-200/50 mb-12 flex flex-col lg:flex-row gap-4 items-center">
+                <div className="relative flex-grow w-full">
+                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                     <input type="text" placeholder="Search vehicle type or provider..."
-                        className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white border border-slate-100 shadow-sm outline-none focus:ring-2 focus:ring-primary/20 transition-all font-bold text-slate-700"
+                        className="w-full pl-14 pr-4 py-4 rounded-2xl bg-white/50 backdrop-blur-md border border-slate-200/50 outline-none focus:bg-white focus:ring-2 focus:ring-primary/30 transition-all font-semibold text-slate-800 shadow-sm"
                         value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
                 </div>
-                <Button variant="outline" className="h-14 px-6 rounded-2xl border-slate-200">
+                <Button variant="outline" className="h-14 px-6 rounded-2xl border-slate-200/60 bg-white hover:bg-slate-50 shadow-sm text-slate-600">
                     <Filter className="w-5 h-5 mr-2" /> Filter capacity
                 </Button>
             </div>
@@ -202,7 +202,7 @@ const TransportBookingModal = ({ item, onClose, onConfirm }) => {
                             </p>
                         </div>
 
-                        <Button variant="premium" className="w-full h-14 rounded-2xl text-base font-black"
+                        <Button className="btn-premium w-full h-14 rounded-[1.25rem] text-base font-black shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)]"
                             disabled={!pickup || !drop || !date || loading} onClick={handleConfirm}>
                             {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Confirm Booking'}
                         </Button>
@@ -214,11 +214,11 @@ const TransportBookingModal = ({ item, onClose, onConfirm }) => {
 };
 
 const TransportCard = ({ item, onBook }) => (
-    <Card className="overflow-hidden border-none shadow-sm hover:shadow-2xl transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col">
-        <div className="relative h-56 overflow-hidden">
-            <img src={item.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+    <Card className="glass-card overflow-hidden border-white/60 hover:border-primary/20 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-500 rounded-[2.5rem] group h-full flex flex-col">
+        <div className="relative h-56 overflow-hidden rounded-t-[2.5rem] m-2">
+            <img src={item.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 rounded-t-[2rem]" />
             <div className="absolute top-4 left-4">
-                <span className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg", item.status === 'Available' ? 'bg-emerald-500/90 text-white' : 'bg-rose-500/90 text-white')}>
+                <span className={cn("px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest backdrop-blur-md shadow-lg border border-white/20", item.status === 'Available' ? 'bg-emerald-500/90 text-white' : 'bg-rose-500/90 text-white')}>
                     {item.status}
                 </span>
             </div>

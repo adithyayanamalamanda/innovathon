@@ -12,7 +12,7 @@ import {
     LandPlot,
     IndianRupee
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';    
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { base44 } from '@/api/base44Client';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -118,9 +118,7 @@ const Lands = () => {
                     <p className="text-slate-500">{t('lands.subtitle')}</p>
                 </div>
                 <Button
-                    variant="premium"
-                    size="lg"
-                    className="rounded-2xl h-14 px-8 shrink-0"
+                    className="btn-premium rounded-[1.25rem] h-14 px-8 shrink-0 text-white font-bold text-[15px] shadow-[0_8px_20px_-6px_rgba(5,150,105,0.4)]"
                     onClick={() => navigate('/login')}
                 >
                     <Plus className="w-5 h-5 mr-2" />
@@ -129,13 +127,13 @@ const Lands = () => {
             </div>
 
             {/* Filter Bar */}
-            <div className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm mb-12 flex flex-col lg:flex-row gap-4 items-center">
+            <div className="glass p-4 rounded-3xl border border-white/60 shadow-xl shadow-slate-200/50 mb-12 flex flex-col lg:flex-row gap-4 items-center">
                 <div className="relative flex-grow w-full">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
                     <input
                         type="text"
                         placeholder={t('lands.searchPlaceholder')}
-                        className="w-full pl-12 pr-4 py-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primary/20 transition-all outline-none text-slate-700"
+                        className="w-full pl-12 pr-4 py-4 bg-white/50 backdrop-blur-md border border-slate-200/50 rounded-2xl focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all outline-none text-slate-800 font-medium shadow-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -149,8 +147,8 @@ const Lands = () => {
                             className={cn(
                                 "px-6 py-3 rounded-2xl text-sm font-bold transition-all whitespace-nowrap",
                                 filterType === type
-                                    ? "bg-primary text-white shadow-lg shadow-primary/20"
-                                    : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                                    ? "bg-gradient-to-tr from-primary-darkest to-primary text-white shadow-[0_10px_20px_-5px_rgba(5,150,105,0.4)] transform -translate-y-0.5"
+                                    : "bg-white border border-slate-200/60 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm"
                             )}
                         >
                             {type === 'All' ? t('lands.all') : type}
@@ -205,15 +203,15 @@ const Lands = () => {
 };
 
 const LandCard = ({ land, onClick, t }) => (
-    <Card onClick={onClick} className="cursor-pointer overflow-hidden group border-none shadow-sm hover:shadow-2xl transition-all duration-500 rounded-3xl h-full flex flex-col">
-        <div className="relative h-64 overflow-hidden">
+    <Card onClick={onClick} className="glass-card cursor-pointer overflow-hidden group border-white/60 hover:border-primary/20 shadow-lg shadow-slate-200/40 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-1.5 transition-all duration-300 rounded-[2rem] h-full flex flex-col">
+        <div className="relative h-64 overflow-hidden rounded-t-[2rem] m-2">
             <img
                 src={land.images?.[0] || 'https://via.placeholder.com/400x300?text=Agri+Land'}
                 alt={land.title}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 rounded-t-[1.5rem]"
             />
             <div className="absolute top-4 left-4">
-                <span className="bg-white/90 backdrop-blur-sm text-primary font-bold text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full shadow-sm">
+                <span className="bg-white/95 backdrop-blur-md text-primary font-bold text-[10px] uppercase tracking-widest px-3.5 py-1.5 rounded-full shadow-md border border-white">
                     {land.land_type} {t('lands.soil')}
                 </span>
             </div>

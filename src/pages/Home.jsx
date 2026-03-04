@@ -138,51 +138,119 @@ const Home = () => {
 
     return (
         <div className="overflow-hidden">
-            {/* Hero Section */}
-            <section className="relative pt-16 pb-32 px-4">
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-primary/10 rounded-full blur-[120px]"></div>
-                    <div className="absolute bottom-0 left-0 w-1/4 h-1/4 bg-primary/5 rounded-full blur-[100px]"></div>
+            {/* ── Hero Section ── */}
+            <section className="relative pt-16 pb-32 px-4 hero-gradient overflow-hidden">
+                {/* Animated mesh orbs */}
+                <div className="absolute inset-0 z-0 pointer-events-none">
+                    <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full animate-float-slow"
+                        style={{ background: 'radial-gradient(circle, rgba(5,150,105,0.14) 0%, transparent 70%)' }} />
+                    <div className="absolute bottom-[-5%] left-[-5%] w-[400px] h-[400px] rounded-full animate-float"
+                        style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%)', animationDelay: '2s' }} />
+                    <div className="absolute top-1/2 left-1/4 w-[300px] h-[300px] rounded-full"
+                        style={{ background: 'radial-gradient(circle, rgba(5,150,105,0.07) 0%, transparent 70%)', animationDelay: '4s' }} />
+                    {/* Grid pattern */}
+                    <div className="absolute inset-0 opacity-[0.025]"
+                        style={{ backgroundImage: 'linear-gradient(rgba(5,150,105,1) 1px, transparent 1px), linear-gradient(90deg, rgba(5,150,105,1) 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
                 </div>
 
                 <div className="container mx-auto relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
                         <motion.div
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 40 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                         >
-                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary font-bold text-xs uppercase tracking-widest mb-6">
-                                <Zap className="w-3 h-3" />
-                                {t('home.badge')}
-                            </div>
-                            <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-8 leading-tight tracking-tight">
-                                {t('home.heroTitle1')}<span className="text-primary italic">{t('home.heroTitleHighlight')}</span>{t('home.heroTitle2')}
-                            </h1>
-                            <p className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+                            {/* Trust badge */}
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.2, type: 'spring', stiffness: 300 }}
+                                className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full mb-8 relative"
+                                style={{ background: 'linear-gradient(135deg, rgba(5,150,105,0.12), rgba(16,185,129,0.08))', border: '1px solid rgba(5,150,105,0.25)' }}
+                            >
+                                <span className="absolute inset-0 rounded-full animate-pulse-glow opacity-50" />
+                                <Zap className="w-4 h-4 text-primary fill-primary" />
+                                <span className="text-primary font-bold text-xs uppercase tracking-widest">{t('home.badge')}</span>
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            </motion.div>
+
+                            {/* Main heading */}
+                            <motion.h1
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                                className="text-5xl md:text-7xl font-black text-slate-900 mb-6 leading-[1.05] tracking-tight"
+                                style={{ fontFamily: 'Outfit, Inter, sans-serif' }}
+                            >
+                                {t('home.heroTitle1')}
+                                <span
+                                    className="block text-transparent animate-gradient-shift"
+                                    style={{ backgroundImage: 'linear-gradient(90deg, #059669 0%, #10b981 40%, #047857 70%, #059669 100%)', backgroundSize: '200% auto', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', fontStyle: 'italic' }}
+                                >
+                                    {t('home.heroTitleHighlight')}
+                                </span>
+                                {t('home.heroTitle2') && <span className="block text-slate-900">{t('home.heroTitle2')}</span>}
+                            </motion.h1>
+
+                            {/* Subtext */}
+                            <motion.p
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.45, duration: 0.7 }}
+                                className="text-xl text-slate-600 mb-12 max-w-2xl mx-auto leading-relaxed font-medium"
+                            >
                                 {t('home.heroDesc')}
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            </motion.p>
+
+                            {/* CTAs */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.6, duration: 0.6 }}
+                                className="flex flex-col sm:flex-row gap-4 justify-center"
+                            >
                                 <Link to="/lands">
-                                    <Button variant="premium" size="xl" className="group w-full sm:w-auto">
+                                    <button className="btn-premium group w-full sm:w-auto text-base py-4 px-9 rounded-2xl flex items-center gap-2 justify-center font-bold">
                                         {t('home.exploreMarketplace')}
-                                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                    </Button>
+                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform" />
+                                    </button>
                                 </Link>
-                                <Button variant="outline" size="xl" className="rounded-xl border-slate-200"
-                                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}>
+                                <button
+                                    className="w-full sm:w-auto text-base py-4 px-9 rounded-2xl font-bold text-slate-700 hover:text-primary transition-all glass border border-slate-200 hover:border-primary/30 hover:shadow-lg"
+                                    onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
+                                >
                                     {t('home.howItWorks')}
-                                </Button>
-                            </div>
+                                </button>
+                            </motion.div>
+
+                            {/* Social proof strip */}
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.9 }}
+                                className="flex items-center justify-center gap-6 mt-12 pt-8 border-t border-slate-200/50"
+                            >
+                                <div className="flex -space-x-2">
+                                    {['https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=60', 'https://images.unsplash.com/photo-1580213144054-e372f741c235?w=60', 'https://images.unsplash.com/photo-1540560522866-da2270928e4a?w=60', 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=60'].map((src, i) => (
+                                        <img key={i} src={src} alt="farmer" className="w-9 h-9 rounded-full border-2 border-white object-cover shadow-sm" />
+                                    ))}
+                                </div>
+                                <div className="text-left">
+                                    <div className="flex items-center gap-1">
+                                        {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />)}
+                                    </div>
+                                    <p className="text-xs text-slate-500 font-medium">Trusted by <b className="text-slate-800">15,000+</b> farmers</p>
+                                </div>
+                            </motion.div>
                         </motion.div>
                     </div>
                 </div>
             </section>
 
             {/* Stats Counter */}
-            <section className="py-12 bg-white border-y border-slate-100">
+            <section className="py-12 bg-white/50 backdrop-blur-md border-y border-slate-200/60 relative z-20 shadow-sm">
                 <div className="container mx-auto px-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                         {stats.map((stat, i) => (
                             <motion.div
                                 key={i}
@@ -190,13 +258,13 @@ const Home = () => {
                                 whileInView={{ opacity: 1, scale: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1 }}
-                                className="text-center p-6 rounded-2xl hover:bg-slate-50 transition-colors"
+                                className="text-center p-6 md:p-8 rounded-[2rem] glass-card card-hover group"
                             >
-                                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center mx-auto mb-4">
-                                    <stat.icon className="w-6 h-6" />
+                                <div className="w-14 h-14 bg-primary/10 group-hover:bg-primary text-primary group-hover:text-white transition-colors rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-inner">
+                                    <stat.icon className="w-7 h-7" />
                                 </div>
-                                <div className="text-3xl font-bold text-slate-900 mb-1">{stat.value}</div>
-                                <div className="text-sm text-slate-500 font-medium uppercase tracking-wide">{stat.label}</div>
+                                <div className="text-3xl md:text-4xl font-extrabold text-slate-900 mb-2">{stat.value}</div>
+                                <div className="text-xs text-slate-500 font-bold uppercase tracking-widest">{stat.label}</div>
                             </motion.div>
                         ))}
                     </div>
@@ -216,25 +284,30 @@ const Home = () => {
                                 {t('home.realTimeDesc')}
                             </p>
 
-                            <Card className="border-none shadow-xl overflow-hidden">
-                                <div className="bg-primary px-6 py-4 flex justify-between items-center">
-                                    <span className="text-white font-bold flex items-center gap-2">
-                                        <TrendingUp className="w-4 h-4" />
+                            <Card className="border border-slate-200/60 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] rounded-3xl overflow-hidden bg-white">
+                                <div className="premium-gradient px-8 py-5 flex justify-between items-center shadow-inner">
+                                    <span className="text-white font-bold flex items-center gap-2.5 text-lg">
+                                        <div className="p-1.5 bg-white/20 rounded-lg">
+                                            <TrendingUp className="w-5 h-5" />
+                                        </div>
                                         {t('home.marketPulse')}
                                     </span>
-                                    <span className="text-white/80 text-xs uppercase tracking-widest font-bold">{t('home.updatedToday')}</span>
+                                    <span className="bg-white/10 px-3 py-1 rounded-full text-white/90 text-[10px] uppercase tracking-widest font-bold border border-white/20 backdrop-blur-sm">{t('home.updatedToday')}</span>
                                 </div>
                                 <CardContent className="p-0">
                                     <div className="divide-y divide-slate-100">
                                         {cropPrices.map((item, i) => (
-                                            <div key={i} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                                            <div key={i} className="px-8 py-5 flex items-center justify-between hover:bg-slate-50/80 transition-all cursor-pointer group">
                                                 <div>
-                                                    <div className="font-bold text-slate-800">{item.crop}</div>
-                                                    <div className="text-xs text-slate-500 font-medium">{item.state}</div>
+                                                    <div className="font-extrabold text-slate-900 text-lg group-hover:text-primary transition-colors">{item.crop}</div>
+                                                    <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider mt-1 flex items-center gap-1">
+                                                        <MapPin className="w-3 h-3 text-slate-400" /> {item.state}
+                                                    </div>
                                                 </div>
                                                 <div className="text-right">
-                                                    <div className="font-bold text-slate-900">{item.price}</div>
-                                                    <div className={cn("text-xs font-bold", item.trend.startsWith('+') ? "text-emerald-500" : "text-rose-500")}>
+                                                    <div className="font-bold text-slate-900 text-lg">{item.price}</div>
+                                                    <div className={cn("text-xs font-bold px-2 py-0.5 rounded-md inline-block mt-1",
+                                                        item.trend.startsWith('+') ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700")}>
                                                         {item.trend}
                                                     </div>
                                                 </div>
@@ -252,16 +325,16 @@ const Home = () => {
                                 viewport={{ once: true }}
                                 className="relative z-10"
                             >
-                                <div className="rounded-3xl overflow-hidden shadow-2xl bg-white p-8 border border-slate-100">
+                                <div className="rounded-[2.5rem] overflow-hidden glass-card p-8 md:p-10 border border-slate-200/80 premium-shadow relative bg-white/95">
                                     {/* Header */}
-                                    <div className="flex items-center justify-between gap-4 mb-6">
+                                    <div className="flex items-center justify-between gap-4 mb-8">
                                         <div className="flex items-center gap-4">
-                                            <div className="p-3 bg-amber-100 text-amber-600 rounded-2xl">
+                                            <div className="p-3 bg-gradient-to-br from-amber-100 to-amber-200 text-amber-600 rounded-2xl shadow-sm border border-amber-200/50">
                                                 <Sun className="w-8 h-8" />
                                             </div>
                                             <div>
-                                                <h3 className="font-bold text-slate-900 text-xl">{t('home.aiWeatherAdvisor')}</h3>
-                                                <p className="text-sm text-slate-500 flex items-center gap-1">
+                                                <h3 className="font-extrabold text-slate-900 text-xl md:text-2xl">{t('home.aiWeatherAdvisor')}</h3>
+                                                <p className="text-xs text-slate-500 font-semibold uppercase tracking-wider flex items-center gap-1 mt-1">
                                                     <MapPin className="w-3 h-3" />
                                                     {weather ? locationName : 'Detect your location'}
                                                 </p>
@@ -271,12 +344,12 @@ const Home = () => {
                                         <button
                                             onClick={fetchWeather}
                                             disabled={weatherLoading}
-                                            className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary/90 transition-all disabled:opacity-60 shrink-0"
+                                            className="flex items-center gap-2 px-4 py-2.5 bg-primary text-white text-xs font-bold rounded-xl hover:bg-primary-dark transition-all shadow-md hover:shadow-lg disabled:opacity-60 shrink-0 border border-primary-dark/20"
                                         >
                                             {weatherLoading
-                                                ? <Loader2 className="w-3 h-3 animate-spin" />
-                                                : <LocateFixed className="w-3 h-3" />}
-                                            {weatherLoading ? 'Detecting...' : 'My Location'}
+                                                ? <Loader2 className="w-4 h-4 animate-spin" />
+                                                : <LocateFixed className="w-4 h-4" />}
+                                            <span className="hidden sm:inline">{weatherLoading ? 'Detecting...' : 'My Location'}</span>
                                         </button>
                                     </div>
 
@@ -438,7 +511,7 @@ const Home = () => {
                         {t('home.ctaDesc')}
                     </p>
                     <Link to="/profile">
-                        <Button size="xl" className="bg-white text-primary hover:bg-slate-100 font-bold rounded-2xl px-12">
+                        <Button size="xl" className="btn-premium px-12 py-7 text-lg shadow-[0_15px_30px_-5px_rgba(255,255,255,0.3)] bg-white !text-primary transform hover:scale-105 transition-all">
                             {t('home.getStarted')}
                         </Button>
                     </Link>
@@ -454,16 +527,16 @@ const Home = () => {
 const ServiceCard = ({ title, desc, icon: Icon, color, link, t }) => (
     <Link to={link}>
         <motion.div
-            whileHover={{ y: -10 }}
-            className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all h-full"
+            className="bg-white/70 backdrop-blur-lg p-8 rounded-[2rem] border border-slate-200/60 shadow-lg shadow-slate-200/50 card-hover h-full flex flex-col relative overflow-hidden group"
         >
-            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center mb-6", color)}>
-                <Icon className="w-7 h-7" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-white/40 to-transparent blur-2xl -mr-10 -mt-10 pointer-events-none rounded-full"></div>
+            <div className={cn("w-16 h-16 rounded-2xl flex items-center justify-center mb-8 shadow-inner border border-white/50 relative z-10", color)}>
+                <Icon className="w-8 h-8" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-900 mb-4">{title}</h3>
-            <p className="text-slate-600 leading-relaxed mb-8">{desc}</p>
-            <div className="flex items-center gap-2 text-primary font-bold text-sm">
-                {t('home.learnMore')} <ArrowRight className="w-4 h-4" />
+            <h3 className="text-2xl font-extrabold text-slate-900 mb-4 tracking-tight group-hover:text-primary transition-colors">{title}</h3>
+            <p className="text-slate-600 leading-relaxed mb-8 font-medium flex-grow">{desc}</p>
+            <div className="flex items-center gap-2 text-primary font-bold text-sm tracking-wide group-hover:gap-4 transition-all mt-auto pt-6 border-t border-slate-100">
+                {t('home.learnMore')} <ArrowRight className="w-4 h-4 ml-auto" />
             </div>
         </motion.div>
     </Link>
