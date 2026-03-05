@@ -6,9 +6,18 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  base: '/innovathon/', // Added for GitHub Pages deployment
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        404: path.resolve(__dirname, '404.html'),
+      },
     },
   },
 })
