@@ -15,7 +15,8 @@ import {
     X,
     Globe,
     Leaf,
-    Mic
+    Mic,
+    Beaker
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
@@ -64,6 +65,7 @@ const Layout = ({ children }) => {
         { name: t('nav.equipment'), path: '/equipment', icon: Tractor },
         { name: t('nav.workers'), path: '/workers', icon: Users },
         { name: t('nav.dashboard'), path: '/dashboard', icon: LayoutDashboard },
+        { name: t('nav.soilAnalysis') || 'Soil Analysis', path: '/soil-analysis', icon: Beaker },
         { name: t('nav.messages'), path: '/messages', icon: MessageSquare },
     ];
 
