@@ -21,7 +21,7 @@ import SoilAnalysis from '@/pages/SoilAnalysis';
 function App() {
   return (
     <LanguageProvider>
-      <Router>
+      <Router basename={import.meta.env.BASE_URL}>
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
