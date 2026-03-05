@@ -17,6 +17,7 @@ import Admin from '@/pages/Admin';
 import CropCalendar from '@/pages/CropCalendar';
 import Login from '@/pages/Login';
 import SoilAnalysis from '@/pages/SoilAnalysis';
+import Advisory from '@/pages/Advisory';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="/calendar" element={<CropCalendar />} />
             <Route path="/login" element={<Login />} />
             <Route path="/soil-analysis" element={<SoilAnalysis />} />
+            <Route path="/advisory" element={<Advisory />} />
             {/* Add more routes as needed */}
           </Routes>
         </Layout>
